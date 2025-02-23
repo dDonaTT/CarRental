@@ -1,10 +1,23 @@
 const express = require("express");
-const mongoose = require("mongoose");
+
+const { connectToDatabase } = require("./lib/rent");
+
 const dotenv = require("dotenv");
 
-const app =express();
+dotenv.config();
+const app = express();
 app.use(express.json());
 
 const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => console.log(`Server started on ${PORT}`));
-dotenv.config();
+
+async function startServer() {
+  try {
+    await connectToDatabase();
+    app.listen(PORT, () => {
+      console.log(`Server is running on port ${PORT}`);
+    });
+  } catch (error) {
+    console.error("Error starting the server:", error);
+  }
+}
+startServer();
